@@ -32,8 +32,8 @@ def chat_node(state: ChatbotState):
 # add Checkpointer
 Checkpointer = MemorySaver()
 
-graph = StateGraph(ChatbotState)
 
+graph = StateGraph(ChatbotState)
 # add nodes now
 graph.add_node('chat_node', chat_node)
 # Now add edges

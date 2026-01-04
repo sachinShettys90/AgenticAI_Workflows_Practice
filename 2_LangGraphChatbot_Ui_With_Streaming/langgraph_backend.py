@@ -1,11 +1,13 @@
-# Here we are using the same Skeleton of chatbot and improving it by adding loops and conditions to store the chat history.
+# # here we are adding the streaming for the chatbot
+
+
 from langgraph.graph import StateGraph, START, END
 from langchain_openai import ChatOpenAI
 from typing import TypedDict, Literal
 import operator
 from typing import List, Annotated
 # (BaseMessage will add the flexibility of using HM , SM, AI Message in ChatBot )
-from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
+from langchain_core.messages import HumanMessage, BaseMessage
 from dotenv import load_dotenv
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -41,3 +43,26 @@ graph.add_edge(START, 'chat_node')
 graph.add_edge('chat_node', END)
 
 chatbot = graph.compile(checkpointer=Checkpointer)
+
+# ROOT CODE
+'''
+stream= chatbot.stream(
+    {'messages': [HumanMessage(content="what is the recepie of maggie")]},
+    config={'configurable': {'thread_id': 'thread_1'}}
+    stream_mode='messages'
+)   # this object will give the message chuck and the metadata
+'''
+
+# Loop run the above code
+# use the object and get the message_chunk and metadata output
+'''
+for messages_chuck, metadat in chatbot.stream(
+    {'messages': [HumanMessage(content="what is the recepie of maggie")]},
+    config={'configurable': {'thread_id': 'thread_1'}},
+    stream_mode='messages'
+):
+    if messages_chuck.content:
+        print(messages_chuck.content, end=' ', flush=True)
+
+        '''
+# implement this streaming in frontend part

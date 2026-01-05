@@ -1,10 +1,11 @@
-# implementation of resume chat with the specific threads in Chatbot
+# implementation of memory for Chatbot in SQL database
+
 
 import streamlit as st
 # st.session_state-> dictionary
 
 # this we use it for invoking the chatbot (ie workflow.invoke )
-from langgraph_backend import chatbot
+from langgraph_backend_SQlite import chatbot, retrieve_all_threads
 
 from langchain_core.messages import HumanMessage
 
@@ -17,12 +18,11 @@ def generate_threadid():  # this will generate the random thread_id
     thread_id = uuid.uuid4()
     return thread_id
 
+
 # when we click on the NewChat it has to do the below functionalities
 # *generate a new thread_id
 # *save it in session
 # *reset message history
-
-
 def reset_chat():
     thread_id = generate_threadid()
     st.session_state['thread_id'] = thread_id
@@ -49,7 +49,8 @@ if 'thread_id' not in st.session_state:
     st.session_state['thread_id'] = generate_threadid  # add it to the session
 
 if 'chat_threads' not in st.session_state:  # initializing the chat_thread in st.session_state
-    st.session_state['chat_threads'] = []
+    # this is the main change we are doing for sqlite *********************
+    st.session_state['chat_threads'] = retrieve_all_threads()
 
 add_thread(st.session_state['thread_id'])  # A
 
@@ -109,26 +110,7 @@ if UserInput:
         {'role': 'assistant', 'content': ai_message})
 
 
-'''
-add a sidebar with title + A Start Chat Button + A title named 'My Conversations'
-generate dynamic thread Id and add it to the session   ---------------------------> for this use library uuid
-Display the thread id in sidebar 
-
-*************************************************************************
-
-On Click of new chat open a new chat window
-    *generate a new thread_id
-    *save it in session
-    *reset message history
-
-*****************************************************************************
-create a list to store all thread_ids ( we have to generate the threadid in 2 cases, 1: when page refresh, 2:when we click on New Chat , in code refer A and B for this)
-Load all the thread ids in the sidebar  ( in code its  refer as C)
-convert the side bar text to clickable buttons  ( in code its  refer as D)
-
-*********************************************************************************
-
-on click of a particular thread id load that particular conversation
-
-'''
 # Here the main problem is when we load the entire page , the output will be completely vanishes so we need to implement the sq database to store all the data
+'''
+Create new frontend and backend files
+'''
